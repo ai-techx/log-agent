@@ -1,7 +1,6 @@
 package agent
 
 import (
-	"github.com/google/logger"
 	"github.com/nxadm/tail"
 	"io"
 	"log-agent/internal/output"
@@ -16,16 +15,21 @@ type TailClient[T any] struct {
 
 // NewTailClient creates a new tail client
 // This client will continuously tail a file and write the outputClient to the outputClient client
-func NewTailClient[T any](path string, outputClient output.Client[T], transformer transformer.Transformer[T]) *TailClient[T] {
+func NewTailClient[T any](path string) *TailClient[T] {
 	return &TailClient[T]{
-		filePath:     path,
-		outputClient: outputClient,
-		transformer:  transformer,
+		filePath: path,
 	}
 }
 
+func (c *TailClient[T]) SetTransformer(transformer transformer.Transformer[T]) {
+	c.transformer = transformer
+}
+
+func (c *TailClient[T]) SetOutput(output output.Client[T]) {
+	c.outputClient = output
+}
+
 func (c *TailClient[T]) Read() error {
-	logger.Info("Using Tail Client: ", c.filePath)
 	config := tail.Config{
 		Follow:    true,
 		ReOpen:    true,
