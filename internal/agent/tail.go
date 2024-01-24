@@ -48,6 +48,9 @@ func (c *TailClient[T]) Read() error {
 
 	// Print the text of each received line
 	for line := range t.Lines {
+		if len(line.Text) == 0 {
+			continue
+		}
 		transformed, err := c.transformer.Transform([]byte(line.Text))
 		if err != nil {
 			return err
