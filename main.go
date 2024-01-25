@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/fatih/color"
 	"github.com/google/logger"
 	"github.com/spf13/viper"
 	"io"
@@ -50,7 +51,7 @@ func main() {
 	for _, t := range readConfig.Transformer {
 		transformerClient, err := transformer.GetTransformerByName[any](t.Uses)
 		if err != nil {
-			panic(err)
+			logger.Fatal(err)
 		}
 		transformers[t.Uses] = transformerClient
 	}
@@ -58,7 +59,7 @@ func main() {
 	for _, o := range readConfig.Output {
 		outputClient, err := output.GetOutputByConfig[any](o)
 		if err != nil {
-			panic(err)
+			logger.Fatal(err)
 		}
 		outputClients[o.Name] = outputClient
 	}
@@ -66,7 +67,7 @@ func main() {
 	for _, i := range readConfig.Input {
 		inputClient, err := agent.GetAgentByConfig[any](i)
 		if err != nil {
-			panic(err)
+			logger.Fatal(err)
 		}
 		inputClients[i.Name] = inputClient
 	}
@@ -75,7 +76,10 @@ func main() {
 		inputClient := setupInputClient(t, transformers, inputClients, outputClients)
 		t := t
 		go func() {
-			logger.Infof("Starting transforming input %s to output %s using %s", t.ForInput, t.ToOutput, t.Uses)
+			blue := color.New(color.FgBlue).SprintFunc()
+			yellow := color.New(color.FgYellow).SprintFunc()
+
+			logger.Infof("Starting transforming input %s to output %s using %s", blue(t.ForInput), blue(t.ToOutput), yellow(t.Uses))
 			err := inputClient.Read()
 			if err != nil {
 				logger.Errorf("Error reading input %s: %s", t.ForInput, err)
