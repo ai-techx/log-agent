@@ -33,7 +33,7 @@ func (c *TailClient[T]) Read() error {
 	config := tail.Config{
 		Follow:    true,
 		ReOpen:    true,
-		MustExist: true,
+		MustExist: false,
 		Location: &tail.SeekInfo{
 			Offset: 0,
 			Whence: io.SeekEnd,

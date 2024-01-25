@@ -18,8 +18,8 @@ func readConfigFromFile() (*config.Config, error) {
 	viper.SetConfigType("yaml")
 	viper.AutomaticEnv()
 
-	viper.AddConfigPath("/etc/cron-requests/")
-	viper.AddConfigPath("$HOME/.cron-requests")
+	viper.AddConfigPath("/etc/log-agent/")
+	viper.AddConfigPath("$HOME/.log-agent")
 	viper.AddConfigPath(".")
 
 	err := viper.ReadInConfig()
