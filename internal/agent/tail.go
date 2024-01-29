@@ -1,6 +1,7 @@
 package agent
 
 import (
+	"github.com/google/logger"
 	"github.com/nxadm/tail"
 	"io"
 	"log-agent/internal/output"
@@ -53,12 +54,13 @@ func (c *TailClient[T]) Read() error {
 		}
 		transformed, err := c.transformer.Transform([]byte(line.Text))
 		if err != nil {
-			return err
+			logger.Error(err)
+			continue
 		}
 
 		err = c.outputClient.Write(*transformed)
 		if err != nil {
-			return err
+			logger.Error(err)
 		}
 	}
 
